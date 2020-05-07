@@ -1,0 +1,5 @@
+export const AUTH_TYPES = {
+    AUTH_ERROR: "AUTH_ERROR",
+    AUTH_LOGOUT: "AUTH_LOGOUT",
+    AUTH_USER: "AUTH_USER"
+};
