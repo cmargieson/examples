@@ -23,18 +23,38 @@ export const verifyAuth = () => {
 // Create a new user in firebase with email and password
 export const createUserWithEmailAndPassword = (email, password) => {
   return (dispatch) => {
-    auth.createUserWithEmailAndPassword(email, password).then(() => {
-      dispatch(verifyAuth());
-    });
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        dispatch(verifyAuth());
+      })
+      .catch((error) =>
+        dispatch({
+          type: AUTH_TYPES.AUTH_ERROR,
+          payload: {
+            authError: error,
+          },
+        })
+      );
   };
 };
 
 // Sign in a user with email and password
 export const signInWithEmailAndPassword = (email, password) => {
   return (dispatch) => {
-    auth.signInWithEmailAndPassword(email, password).then(() => {
-      dispatch(verifyAuth());
-    });
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        dispatch(verifyAuth());
+      })
+      .catch((error) =>
+        dispatch({
+          type: AUTH_TYPES.AUTH_ERROR,
+          payload: {
+            authError: error,
+          },
+        })
+      );
   };
 };
 
@@ -45,6 +65,15 @@ export const signOut = () => {
       dispatch({
         type: AUTH_TYPES.AUTH_LOGOUT,
       });
+    });
+  };
+};
+
+// Sign out a user
+export const resetError = () => {
+  return (dispatch) => {
+    dispatch({
+      type: AUTH_TYPES.AUTH_ERROR_RESET,
     });
   };
 };
