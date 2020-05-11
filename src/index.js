@@ -18,12 +18,10 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 store.dispatch(verifyAuth());
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <CssBaseline />
-      <App />
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <CssBaseline />
+    <App />
+  </Provider>,
   document.getElementById("root")
 );
 
