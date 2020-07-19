@@ -1,0 +1,17 @@
+# Docker
+*Dockerfile*
+*docker-compose*
+
+# Git
+.git
+.gitignore
+
+# Node & npm
+.env
+node_modules
+npm-debug.log
+
+# VSCode
+.vscode
+
+*.pem

@@ -1,17 +1,37 @@
 version: 2.1
+
 orbs:
-  node: circleci/node@1.1.6
-jobs:
-  build-and-test:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm test
+  aws-ecr: circleci/aws-ecr@6.11.0
+  aws-ecs: circleci/aws-ecs@1.2.0
+  node: circleci/node@3.0.1
+
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  test-and-deploy:
+    jobs:
+      - node/test
+
+#       # Install AWS CLI, if needed, and configure
+#       # Log into Amazon ECR and push image to repository
+#       # Requires environment variables for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION and AWS_ECR_ACCOUNT_URL
+#       - aws-ecr/build-and-push-image:
+#           requires:
+#             - node/test
+#           # Name of an Amazon ECR repository
+#           repo: "${AWS_RESOURCE_NAME_PREFIX}"
+#           # A comma-separated string containing docker image tags to build and push
+#           tag: "${CIRCLE_SHA1},latest"
+
+#       - aws-ecs/deploy-service-update:
+#           requires:
+#             - aws-ecr/build-and-push-image
+#           # Name of the task definition's family
+#           family: "${AWS_RESOURCE_NAME_PREFIX}-task"
+#           # The short name or full ARN of the cluster that hosts the service
+#           cluster-name: "${AWS_RESOURCE_NAME_PREFIX}-cluster"
+#           # Use this to update the Docker image names and/or tag names of existing containers that had been defined in the previous task definition.
+#           # Expected format: container=<container-name>,image-and-tag=<image-name>:<tag-name>|image=<image-name>|tag=<tag-name>,container=...,image-and-tag|image|tag=...,
+#           # For each container, specify only either "image-and-tag" or "image" or "tag".
+#           # If "image-and-tag" is specified, the container image will be updated to the value of the name-value pair.
+#           # If "image" is specified, the image tag defined in the previous task definition will be retained, if exists.
+#           # If "tag" is specified, the image name defined in the previous task definition will be used.
+#           container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX}-container,tag=${CIRCLE_SHA1}"

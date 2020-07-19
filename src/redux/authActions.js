@@ -69,7 +69,6 @@ export const signOut = () => {
   };
 };
 
-// Sign out a user
 export const resetError = () => {
   return (dispatch) => {
     dispatch({
