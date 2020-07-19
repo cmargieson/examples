@@ -1,5 +1,6 @@
 {
   "name": "react-template",
+  "description": "Minimal React Template: material-ui + firebase + redux + router",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -39,3 +40,4 @@
     ]
   }
 }
+
