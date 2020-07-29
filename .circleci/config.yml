@@ -1,8 +1,7 @@
 version: 2.1
 
 orbs:
-  #  aws-ecr: circleci/aws-ecr@6.11.0
-  #  aws-ecs: circleci/aws-ecs@1.2.0
+  aws-ecs: circleci/aws-ecs@1.2.0
   docker: circleci/docker@1.3.0
   node: circleci/node@3.0.1
 
@@ -20,29 +19,18 @@ workflows:
                 - master
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           tag: "${CIRCLE_SHA1},latest"
-          
-#       # Install AWS CLI, if needed, and configure
-#       # Log into Amazon ECR and push image to repository
-#       # Requires environment variables for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION and AWS_ECR_ACCOUNT_URL
-#       - aws-ecr/build-and-push-image:
-#           requires:
-#             - node/test
-#           # Name of an Amazon ECR repository
-#           repo: "${AWS_RESOURCE_NAME_PREFIX}"
-#           # A comma-separated string containing docker image tags to build and push
-#           tag: "${CIRCLE_SHA1},latest"
 
-#       - aws-ecs/deploy-service-update:
-#           requires:
-#             - aws-ecr/build-and-push-image
-#           # Name of the task definition's family
-#           family: "${AWS_RESOURCE_NAME_PREFIX}-task"
-#           # The short name or full ARN of the cluster that hosts the service
-#           cluster-name: "${AWS_RESOURCE_NAME_PREFIX}-cluster"
-#           # Use this to update the Docker image names and/or tag names of existing containers that had been defined in the previous task definition.
-#           # Expected format: container=<container-name>,image-and-tag=<image-name>:<tag-name>|image=<image-name>|tag=<tag-name>,container=...,image-and-tag|image|tag=...,
-#           # For each container, specify only either "image-and-tag" or "image" or "tag".
-#           # If "image-and-tag" is specified, the container image will be updated to the value of the name-value pair.
-#           # If "image" is specified, the image tag defined in the previous task definition will be retained, if exists.
-#           # If "tag" is specified, the image name defined in the previous task definition will be used.
-#           container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX}-container,tag=${CIRCLE_SHA1}"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - docker/publish
+          # Name of the task definition's family
+          family: "react-template-ecs-task-definition"
+          # The short name or full ARN of the cluster that hosts the service
+          cluster-name: "react-template"
+          # Use this to update the Docker image names and/or tag names of existing containers that had been defined in the previous task definition.
+          # Expected format: container=<container-name>,image-and-tag=<image-name>:<tag-name>|image=<image-name>|tag=<tag-name>,container=...,image-and-tag|image|tag=...,
+          # For each container, specify only either "image-and-tag" or "image" or "tag".
+          # If "image-and-tag" is specified, the container image will be updated to the value of the name-value pair.
+          # If "image" is specified, the image tag defined in the previous task definition will be retained, if exists.
+          # If "tag" is specified, the image name defined in the previous task definition will be used.
+          container-image-name-updates: "container=react-template,tag=${CIRCLE_SHA1}"
