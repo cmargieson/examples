@@ -137,7 +137,7 @@ resource "aws_ecs_cluster" "application" {
 resource "aws_ecs_task_definition" "application" {
   container_definitions    = file("task-definitions/${var.short_name}.json")
   cpu                      = 1024
-  family                   = "${var.short_name}-ecs-task-definition"
+  family                   = "${var.short_name}"
   memory                   = 2048
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]

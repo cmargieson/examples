@@ -1,18 +1,13 @@
 version: 2.1
 
 orbs:
-  aws-ecs: circleci/aws-ecs@1.2.0
-  docker: circleci/docker@1.3.0
-  node: circleci/node@3.0.1
+  aws-ecs: circleci/aws-ecs@0.0.10
+  docker: circleci/docker@1.4.0
 
 workflows:
-  test-and-deploy:
+  build-and-deploy:
     jobs:
-      - node/test
-
       - docker/publish:
-          requires:
-            - node/test
           filters:
             branches:
               only:
@@ -21,16 +16,9 @@ workflows:
           tag: "${CIRCLE_SHA1},latest"
 
       - aws-ecs/deploy-service-update:
+          # Danger: Race with Terraform update
           requires:
             - docker/publish
-          # Name of the task definition's family
-          family: "react-template-ecs-task-definition"
-          # The short name or full ARN of the cluster that hosts the service
+          family: "react-template" # Family name must match service name
           cluster-name: "react-template"
-          # Use this to update the Docker image names and/or tag names of existing containers that had been defined in the previous task definition.
-          # Expected format: container=<container-name>,image-and-tag=<image-name>:<tag-name>|image=<image-name>|tag=<tag-name>,container=...,image-and-tag|image|tag=...,
-          # For each container, specify only either "image-and-tag" or "image" or "tag".
-          # If "image-and-tag" is specified, the container image will be updated to the value of the name-value pair.
-          # If "image" is specified, the image tag defined in the previous task definition will be retained, if exists.
-          # If "tag" is specified, the image name defined in the previous task definition will be used.
           container-image-name-updates: "container=react-template,tag=${CIRCLE_SHA1}"
