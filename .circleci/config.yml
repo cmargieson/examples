@@ -3,10 +3,13 @@ version: 2.1
 orbs:
   # aws-ecs: circleci/aws-ecs@0.0.10
   docker: circleci/docker@1.4.0
+  node: circleci/node@3.0.1
 
 workflows:
   build-and-deploy:
     jobs:
+      - node/test
+
       - docker/publish:
           filters:
             branches:
