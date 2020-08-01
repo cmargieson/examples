@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-ecs: circleci/aws-ecs@0.0.10
+  # aws-ecs: circleci/aws-ecs@0.0.10
   docker: circleci/docker@1.4.0
 
 workflows:
@@ -15,10 +15,10 @@ workflows:
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           tag: "${CIRCLE_SHA1},latest"
 
-      - aws-ecs/deploy-service-update:
-          # Danger: Race with Terraform update
-          requires:
-            - docker/publish
-          family: "react-template" # Family name must match service name
-          cluster-name: "react-template"
-          container-image-name-updates: "container=react-template,tag=${CIRCLE_SHA1}"
+      # - aws-ecs/deploy-service-update:
+      #     # Danger: Race with Terraform update
+      #     requires:
+      #       - docker/publish
+      #     family: "react-template" # Family name must match service name
+      #     cluster-name: "react-template"
+      #     container-image-name-updates: "container=react-template,tag=${CIRCLE_SHA1}"
