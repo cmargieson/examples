@@ -11,13 +11,15 @@ workflows:
       - node/test
 
       - docker/publish:
+          requires:
+            - node/test
           filters:
             branches:
               only:
                 - master
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
           tag: "${CIRCLE_SHA1},latest"
-
+          
       # - aws-ecs/deploy-service-update:
       #     # Danger: Race with Terraform update
       #     requires:
