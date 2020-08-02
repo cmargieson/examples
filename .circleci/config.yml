@@ -6,7 +6,7 @@ orbs:
   node: circleci/node@3.0.1
 
 workflows:
-  build-and-deploy:
+  test-and-publish:
     jobs:
       - node/test
 
