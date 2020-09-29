@@ -1,1 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Update Create React App Project
+
+```
+npm install react-scripts
+```
