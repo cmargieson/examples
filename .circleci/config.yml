@@ -10,23 +10,27 @@ workflows:
     jobs:
       - node/test
 
+      - hold:
+          type: approval
+
       - docker/publish:
-          requires:
-            - node/test
           filters:
             branches:
               only:
                 - master
           image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          requires:
+            - node/test
           tag: "${CIRCLE_SHA1},latest"
-          
-       - aws-ecs/deploy-service-update:
+
+      - aws-ecs/deploy-service-update:
           container-image-name-updates: "container=react-template,tag=${CIRCLE_SHA1}"
           cluster-name: "react-template"
           family: "react-template" # Family name must match service name
+          filters:
+            branches:
+              only:
+                - master
           requires:
+            - hold
             - docker/publish
-          type: approval
-          
-          
-          
