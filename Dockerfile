@@ -5,8 +5,8 @@ FROM node:14 AS builder
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
-# Default to port 80
-ARG PORT=80
+# Default to port 2368
+ARG PORT=2368
 ENV PORT $PORT
 
 # Create app directory as root
