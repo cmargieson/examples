@@ -28,7 +28,7 @@ variable "memory" {
 
 variable "port" {
   description = "Port exposed by the docker image."
-  default     = 2368
+  default     = 80
 }
 
 variable "docker_image" {
