@@ -4,10 +4,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 // Redux
 import { connect } from "react-redux";
-import { signOut } from "./redux/authActions";
+import { signOut } from "../redux/authActions";
 // Router
 import { useHistory } from "react-router-dom";
 
@@ -27,8 +26,6 @@ const NavBar = ({ userModel, signOut }) => {
             </Button>
           </Grid>
         </Grid>
-
-        <Typography variant="h6">template</Typography>
 
         <Grid container direction="row" justify="flex-end">
           <Grid item>

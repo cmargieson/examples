@@ -1,3 +1,5 @@
+# https://github.com/BretFisher/node-docker-good-defaults
+
 FROM node:14 AS builder
 
 # Either development or production

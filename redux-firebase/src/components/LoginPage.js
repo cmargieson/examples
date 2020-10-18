@@ -10,10 +10,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import TextField from "@material-ui/core/TextField";
 // Redux
 import { connect } from "react-redux";
-import {
-  resetError,
-  createUserWithEmailAndPassword,
-} from "./redux/authActions";
+import { resetError, signInWithEmailAndPassword } from "../redux/authActions";
 // Router
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 
@@ -27,8 +24,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SignupPage = ({
-  createUserWithEmailAndPassword,
+const LoginPage = ({
+  signInWithEmailAndPassword,
   authError,
   userModel,
   resetError,
@@ -75,9 +72,9 @@ const SignupPage = ({
             <Button
               color="primary"
               variant="contained"
-              onClick={() => createUserWithEmailAndPassword(email, password)}
+              onClick={() => signInWithEmailAndPassword(email, password)}
             >
-              Sign Up
+              Login
             </Button>
           </Grid>
           <Grid item>
@@ -85,10 +82,10 @@ const SignupPage = ({
               href="#"
               onClick={(event) => {
                 event.preventDefault();
-                history.push("/login");
+                history.push("/signup");
               }}
             >
-              Already have an account? Sign in.
+              Don't have an account? Sign up.
             </Link>
           </Grid>
         </Grid>
@@ -124,9 +121,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createUserWithEmailAndPassword: (email, password) =>
-    dispatch(createUserWithEmailAndPassword(email, password)),
+  signInWithEmailAndPassword: (email, password) =>
+    dispatch(signInWithEmailAndPassword(email, password)),
   resetError: () => dispatch(resetError()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignupPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

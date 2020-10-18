@@ -1,7 +1,7 @@
 import React from "react";
 // Components
-import LoginPage from "./LoginPage";
-import SignupPage from "./SignupPage";
+import LoginPage from "./components/LoginPage";
+import SignupPage from "./components/SignupPage";
 // Material UI
 import { makeStyles } from "@material-ui/core/styles";
 // Redux

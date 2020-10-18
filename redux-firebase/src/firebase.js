@@ -7,8 +7,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 
-
-// The Firebase config object contains unique, 
+// The Firebase config object contains unique,
 // but non-secret identifiers for your Firebase project.
 const firebaseConfig = {
   apiKey: "AIzaSyDoFsqjNLWBBd9nUpL52tTkT9U37gFTEK4",

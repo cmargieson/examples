@@ -1,6 +1,6 @@
 import React from "react";
 // Components
-import NavBar from "./NavBar";
+import NavBar from "./components/NavBar";
 import Routes from "./Routes";
 // Material UI
 import { makeStyles } from "@material-ui/core/styles";
