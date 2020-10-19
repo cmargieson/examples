@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "expo-apollo-auth0",
+    "scheme": "client",
     "slug": "expo-apollo-auth0",
     "version": "1.0.0",
     "orientation": "portrait",
