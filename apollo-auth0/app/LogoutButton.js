@@ -1,0 +1,27 @@
+import React from "react";
+import { Button } from "react-native";
+// Apollo
+import { useApolloClient } from "@apollo/client";
+// Expo
+import { deleteItemAsync } from "expo-secure-store";
+
+const LogoutButton = (props) => {
+  const client = useApolloClient();
+
+  return (
+    <Button
+      onPress={async () => {
+        // Delete authorization token from secure storage
+        // Returns null if there is no entry for the key
+        await deleteItemAsync("id_token");
+
+        // Refetch queries
+        // client.clearStore()
+        client.resetStore();
+      }}
+      {...props}
+    />
+  );
+};
+
+export default LogoutButton;
