@@ -9,3 +9,9 @@ firebase emulators:start
 cd functions
 
 npm install apollo-server-cloud-functions graphql
+
+---
+
+cd ..
+
+npx create-react-app web
