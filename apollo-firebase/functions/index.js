@@ -1,17 +1,11 @@
-// The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
+// Cloud Functions for Firebase SDK
 const functions = require("firebase-functions");
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-// The Firebase Admin SDK to access Firestore.
+// Firebase Admin SDK
 const admin = require("firebase-admin");
 admin.initializeApp();
+
+const { ApolloServer, gql } = require("apollo-server-cloud-functions");
 
 const books = [
   {
@@ -26,35 +20,18 @@ const books = [
   },
 ];
 
-const {
-  ApolloServer,
-  gql,
-  AuthenticationError,
-} = require("apollo-server-cloud-functions");
-
-// A schema is a collection of type definitions (hence "typeDefs")
-// that together define the "shape" of queries that are executed against
-// your data.
 const typeDefs = gql`
-  # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
-
-  # This "Book" type defines the queryable fields for every book in our data source.
   type Book {
     title: String
     author: String
     id: ID
   }
 
-  # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     books: [Book]
   }
 `;
 
-// Resolvers define the technique for fetching the types defined in the
-// schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
     books: (parent, args, context, info) => {
@@ -64,22 +41,20 @@ const resolvers = {
   },
 };
 
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    // Get the user token from the headers
+    // Get token from  headers
     const token = req.headers?.authorization;
 
     if (token) {
       try {
-        // Verify the token and get the user
+        // Verify token and get user
         const user = await admin
           .auth()
           .verifyIdToken(req.headers.authorization);
-        // Add the user to the context
+        // Add user to  context
         return { user };
       } catch (e) {
         // console.log(e);
