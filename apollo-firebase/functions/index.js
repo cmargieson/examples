@@ -17,12 +17,12 @@ const books = [
   {
     title: "The Awakening",
     author: "Kate Chopin",
-    id: "1aqa3"
+    id: "1aqa3",
   },
   {
     title: "City of Glass",
     author: "Paul Auster",
-    id: "8ythero"
+    id: "8ythero",
   },
 ];
 
@@ -57,7 +57,10 @@ const typeDefs = gql`
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers = {
   Query: {
-    books: () => books,
+    books: (parent, args, context, info) => {
+      console.log(context);
+      return books;
+    },
   },
 };
 
@@ -66,17 +69,24 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  // context: async ({ req }) => {
-  //   // Get the user token from the headers
-  //   const token = req.headers?.authorization;
+  context: async ({ req }) => {
+    // Get the user token from the headers
+    const token = req.headers?.authorization;
 
-  //   if (token) {
-  //     // Verify the token and get the user
-  //     const user = await admin.auth().verifyIdToken(req.headers.authorization);
-  //     // Add the user to the context
-  //     return { user };
-  //   }
-  // },
+    if (token) {
+      try {
+        // Verify the token and get the user
+        const user = await admin
+          .auth()
+          .verifyIdToken(req.headers.authorization);
+        // Add the user to the context
+        return { user };
+      } catch (e) {
+        // console.log(e);
+        return { user: null };
+      }
+    }
+  },
   playground: true,
   introspection: true,
 });
