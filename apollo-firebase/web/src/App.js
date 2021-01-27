@@ -25,13 +25,13 @@ const httpLink = createHttpLink({
 
 // Set a context on your operation, which is used by other links further down
 // the chain
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext(async (_, { headers }) => {
   // Ensure that the UI and store state reflects the current user's permissions
   // is to call client.resetStore() after your login or logout process has
   // completed
 
-  // TODO: Get token from firebase
-  const token = "123";
+  // Get token from firebase
+  const token = await firebase.auth().currentUser?.getIdToken(true);
 
   // Return the headers to the context so httpLink can read them
   return {
@@ -193,7 +193,13 @@ function ProtectedPage() {
       {auth.user && (
         <>
           <button
-            onClick={() => firebase.auth().signOut().then(history.push("/"))}
+            onClick={() =>
+              firebase
+                .auth()
+                .signOut()
+                .then(client.resetStore())
+                .finally(history.push("/"))
+            }
           >
             Logout
           </button>
