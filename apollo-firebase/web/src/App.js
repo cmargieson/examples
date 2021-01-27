@@ -44,36 +44,41 @@ const client = new ApolloClient({
   // },
 });
 
-const App = () => (
-  <ApolloProvider client={client}>
-    <AuthProvider>
-      <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/public">Public Page</Link>
-            </li>
-            <li>
-              <Link to="/protected">Protected Page</Link>
-            </li>
-          </ul>
+const App = () => {
+  return (
+    <ApolloProvider client={client}>
+      <AuthProvider>
+        <Router>
+          <div>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
 
-          <Switch>
-            <Route path="/public">
-              <PublicPage />
-            </Route>
-            <Route path="/login">
-              <LoginPage />
-            </Route>
-            <PrivateRoute path="/protected">
-              <ProtectedPage />
-            </PrivateRoute>
-          </Switch>
-        </div>
-      </Router>
-    </AuthProvider>
-  </ApolloProvider>
-);
+              <li>
+                <Link to="/profile">Profile</Link>
+              </li>
+            </ul>
+
+            <Switch>
+              <Route exact path="/">
+                <PublicPage />
+              </Route>
+
+              <PrivateRoute path="/profile">
+                <ProfilePage />
+              </PrivateRoute>
+
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </AuthProvider>
+    </ApolloProvider>
+  );
+};
 
 const authContext = createContext();
 
@@ -153,16 +158,19 @@ const PublicPage = () => {
   );
 };
 
-const ProtectedPage = () => {
+const ProfilePage = () => {
   let history = useHistory();
   let auth = useAuth();
 
+  console.log(auth.user);
+
   return (
     <>
-      <h3>Protected</h3>
+      <h3>Profile</h3>
 
       {auth.user && (
         <>
+          <p>{auth.user.email}</p>
           <button
             onClick={() =>
               firebase
@@ -186,11 +194,15 @@ const LoginPage = () => {
 
   let { from } = location.state || { from: { pathname: "/" } };
 
+  if (auth.loading) {
+    return <h1>Loading...</h1>;
+  }
+
   return auth.user ? (
     <Redirect to={{ pathname: from.pathname }} />
   ) : (
     <div>
-      <h3>Login</h3>
+      <p>Login</p>
 
       <p>From: {from.pathname}</p>
 
