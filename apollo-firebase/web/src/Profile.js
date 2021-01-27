@@ -12,7 +12,7 @@ const ProfilePage = ({ cb }) => {
 
   return (
     <>
-      <h3>Profile</h3>
+      <h3>Profile:</h3>
 
       {auth.user && (
         <>

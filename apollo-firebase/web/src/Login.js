@@ -1,5 +1,6 @@
 import React from "react";
-
+// Apollo
+import { client } from "./index.js";
 // Firebase
 import firebase from "./firebase";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
@@ -14,9 +15,7 @@ const LoginPage = () => {
 
   let { from } = location.state || { from: { pathname: "/" } };
 
-  if (auth.loading) {
-    return <h1>Loading...</h1>;
-  }
+  if (auth.loading) return <h1>Loading...</h1>;
 
   return auth.user ? (
     <Redirect to={{ pathname: from.pathname }} />
@@ -29,7 +28,10 @@ const LoginPage = () => {
       <StyledFirebaseAuth
         uiConfig={{
           callbacks: {
-            signInSuccessWithAuthResult: () => false,
+            signInSuccessWithAuthResult: () => {
+              client.resetStore();
+              return false;
+            },
           },
           signInFlow: "popup",
           signInOptions: [

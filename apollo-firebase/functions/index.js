@@ -7,19 +7,6 @@ admin.initializeApp();
 
 const { ApolloServer, gql } = require("apollo-server-cloud-functions");
 
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin",
-    id: "1aqa3",
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster",
-    id: "8ythero",
-  },
-];
-
 const typeDefs = gql`
   type Book {
     title: String
@@ -34,9 +21,20 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    books: (parent, args, context, info) => {
+    books: async (parent, args, context, info) => {
       console.log(context);
-      return books;
+
+      if (!context.user?.uid) return [];
+
+      const snapshot = await admin
+        .firestore()
+        .collection("books")
+        .where("uid", "==", context.user.uid)
+        .get();
+
+      let walks = [];
+      snapshot.docs.map((doc) => walks.push({ id: doc.id, ...doc.data() }));
+      return walks;
     },
   },
 };
@@ -47,7 +45,6 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     // Get token from  headers
     const token = req.headers?.authorization;
-
     if (token) {
       try {
         // Verify token and get user
@@ -61,6 +58,7 @@ const server = new ApolloServer({
         return { user: null };
       }
     }
+    return { user: null };
   },
   playground: true,
   introspection: true,
