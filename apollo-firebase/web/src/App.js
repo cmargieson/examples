@@ -1,9 +1,12 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useContext, createContext, useEffect, useState } from "react";
 // Apollo
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from "@apollo/client";
 import { useMutation, useQuery, gql } from "@apollo/client";
+// Firebase
+import firebase from "./firebase";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 // Router
 import {
   BrowserRouter as Router,
@@ -66,8 +69,6 @@ export default function AuthExample() {
       <ProvideAuth>
         <Router>
           <div>
-            <AuthButton />
-
             <ul>
               <li>
                 <Link to="/public">Public Page</Link>
@@ -95,18 +96,6 @@ export default function AuthExample() {
   );
 }
 
-const fakeAuth = {
-  isAuthenticated: false,
-  signin(cb) {
-    fakeAuth.isAuthenticated = true;
-    setTimeout(cb, 100); // fake async
-  },
-  signout(cb) {
-    fakeAuth.isAuthenticated = false;
-    setTimeout(cb, 100);
-  },
-};
-
 // For more details on `authContext`, `ProvideAuth`, `useAuth` and
 // `useProvideAuth` refer to: https://usehooks.com/useAuth/
 
@@ -124,45 +113,18 @@ function useAuth() {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
 
-  const signin = (cb) => {
-    return fakeAuth.signin(() => {
-      setUser("user");
-      cb();
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     });
-  };
+    return () => unsubscribe();
+  }, []);
 
-  const signout = (cb) => {
-    return fakeAuth.signout(() => {
-      setUser(null);
-      cb();
-    });
-  };
-
-  return {
-    user,
-    signin,
-    signout,
-  };
-}
-
-function AuthButton() {
-  let history = useHistory();
-  let auth = useAuth();
-
-  return auth.user ? (
-    <p>
-      Welcome!{" "}
-      <button
-        onClick={() => {
-          auth.signout(() => history.push("/"));
-        }}
-      >
-        Sign out
-      </button>
-    </p>
-  ) : (
-    <p>You are not logged in.</p>
-  );
+  return { user };
 }
 
 // A wrapper for <Route> that redirects to the login screen if you're not yet
@@ -222,25 +184,55 @@ function PublicPage() {
 }
 
 function ProtectedPage() {
-  return <h3>Protected</h3>;
+  let history = useHistory();
+  let auth = useAuth();
+  return (
+    <>
+      <h3>Protected</h3>
+
+      {auth.user && (
+        <>
+          <button
+            onClick={() => firebase.auth().signOut().then(history.push("/"))}
+          >
+            Logout
+          </button>
+        </>
+      )}
+    </>
+  );
 }
 
 function LoginPage() {
-  let history = useHistory();
   let location = useLocation();
   let auth = useAuth();
 
   let { from } = location.state || { from: { pathname: "/" } };
-  let login = () => {
-    auth.signin(() => {
-      history.replace(from);
-    });
-  };
 
-  return (
+  console.log(auth.user);
+
+  return auth.user ? (
+    <Redirect to={{ pathname: from.pathname }} />
+  ) : (
     <div>
-      <p>You must log in to view the page at {from.pathname}</p>
-      <button onClick={login}>Log in</button>
+      <h2>Login</h2>
+      <p>From: {from.pathname}</p>
+      <StyledFirebaseAuth
+        uiConfig={{
+          callbacks: {
+            // Avoid redirects after sign-in
+            signInSuccessWithAuthResult: () => false,
+          },
+          signInFlow: "popup",
+          signInOptions: [
+            {
+              provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+              requireDisplayName: false,
+            },
+          ],
+        }}
+        firebaseAuth={firebase.auth()}
+      />
     </div>
   );
 }
