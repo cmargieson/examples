@@ -69,7 +69,7 @@ const App = () => {
               </Route>
 
               <PrivateRoute path="/profile">
-                <ProfilePage cb={client.resetStore()} />
+                <ProfilePage cb={() => client.resetStore()} />
               </PrivateRoute>
 
               <Route path="/login">

@@ -10,8 +10,6 @@ const ProfilePage = ({ cb }) => {
   let history = useHistory();
   let auth = useAuth();
 
-  console.log(auth);
-
   return (
     <>
       <h3>Profile</h3>
@@ -21,7 +19,7 @@ const ProfilePage = ({ cb }) => {
           <p>{auth.user.email}</p>
           <button
             onClick={() =>
-              firebase.auth().signOut().then(history.push("/")).finally(() => cb)
+              firebase.auth().signOut().then(history.push("/")).finally(cb())
             }
           >
             Logout
