@@ -1,4 +1,9 @@
 import React, { useContext, createContext, useState } from "react";
+// Apollo
+import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { ApolloProvider } from "@apollo/client";
+import { useMutation, useQuery, gql } from "@apollo/client";
 // Router
 import {
   BrowserRouter as Router,
@@ -10,51 +15,83 @@ import {
   useLocation,
 } from "react-router-dom";
 
-// This example has 3 pages: a public page, a protected
-// page, and a login screen. In order to see the protected
-// page, you must first login. Pretty standard stuff.
+// Custom instance of HttpLink
+const httpLink = createHttpLink({
+  uri: "http://localhost:5001/template-4d4c9/us-central1/graphql",
+});
+
+// Set a context on your operation, which is used by other links further down
+// the chain
+const authLink = setContext((_, { headers }) => {
+  // Ensure that the UI and store state reflects the current user's permissions
+  // is to call client.resetStore() after your login or logout process has
+  // completed
+
+  // TODO: Get token from firebase
+  const token = "123";
+
+  // Return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+  // defaultOptions: {
+  //   mutate: { errorPolicy: "ignore" },
+  // },
+});
+
+// This example has 3 pages: a public page, a protected page, and a login
+// screen. In order to see the protected page, you must first login. Pretty
+// standard stuff.
 //
-// First, visit the public page. Then, visit the protected
-// page. You're not yet logged in, so you are redirected
-// to the login page. After you login, you are redirected
-// back to the protected page.
+// First, visit the public page. Then, visit the protected page. You're not yet
+// logged in, so you are redirected to the login page. After you login, you are
+// redirected back to the protected page.
 //
-// Notice the URL change each time. If you click the back
-// button at this point, would you expect to go back to the
-// login page? No! You're already logged in. Try it out,
-// and you'll see you go back to the page you visited
-// just *before* logging in, the public page.
+// Notice the URL change each time. If you click the back button at this point,
+// would you expect to go back to the login page? No! You're already logged in.
+// Try it out, and you'll see you go back to the page you visited just *before*
+// logging in, the public page.
 
 export default function AuthExample() {
   return (
-    <ProvideAuth>
-      <Router>
-        <div>
-          <AuthButton />
+    <ApolloProvider client={client}>
+      <ProvideAuth>
+        <Router>
+          <div>
+            <AuthButton />
 
-          <ul>
-            <li>
-              <Link to="/public">Public Page</Link>
-            </li>
-            <li>
-              <Link to="/protected">Protected Page</Link>
-            </li>
-          </ul>
+            <ul>
+              <li>
+                <Link to="/public">Public Page</Link>
+              </li>
+              <li>
+                <Link to="/protected">Protected Page</Link>
+              </li>
+            </ul>
 
-          <Switch>
-            <Route path="/public">
-              <PublicPage />
-            </Route>
-            <Route path="/login">
-              <LoginPage />
-            </Route>
-            <PrivateRoute path="/protected">
-              <ProtectedPage />
-            </PrivateRoute>
-          </Switch>
-        </div>
-      </Router>
-    </ProvideAuth>
+            <Switch>
+              <Route path="/public">
+                <PublicPage />
+              </Route>
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+              <PrivateRoute path="/protected">
+                <ProtectedPage />
+              </PrivateRoute>
+            </Switch>
+          </div>
+        </Router>
+      </ProvideAuth>
+    </ApolloProvider>
   );
 }
 
@@ -70,10 +107,9 @@ const fakeAuth = {
   },
 };
 
-/** For more details on
- * `authContext`, `ProvideAuth`, `useAuth` and `useProvideAuth`
- * refer to: https://usehooks.com/useAuth/
- */
+// For more details on `authContext`, `ProvideAuth`, `useAuth` and
+// `useProvideAuth` refer to: https://usehooks.com/useAuth/
+
 const authContext = createContext();
 
 function ProvideAuth({ children }) {
@@ -129,8 +165,8 @@ function AuthButton() {
   );
 }
 
-// A wrapper for <Route> that redirects to the login
-// screen if you're not yet authenticated.
+// A wrapper for <Route> that redirects to the login screen if you're not yet
+// authenticated.
 function PrivateRoute({ children, ...rest }) {
   let auth = useAuth();
   return (
@@ -153,7 +189,36 @@ function PrivateRoute({ children, ...rest }) {
 }
 
 function PublicPage() {
-  return <h3>Public</h3>;
+  const BOOKS = gql`
+    query books {
+      books {
+        title
+        author
+        id
+      }
+    }
+  `;
+
+  const { loading, error, data } = useQuery(BOOKS);
+  if (loading) return <p>Loading...</p>;
+  if (error) {
+    console.error(error);
+    return <p>Error :( {error.message}</p>;
+  }
+  return (
+    <>
+      <h3>Public</h3>
+      <h4>Books:</h4>
+
+      {data.books.map(({ title, author, id }) => (
+        <div key={id}>
+          <p>
+            {title}: {author}
+          </p>
+        </div>
+      ))}
+    </>
+  );
 }
 
 function ProtectedPage() {

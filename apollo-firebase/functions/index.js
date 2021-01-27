@@ -17,10 +17,12 @@ const books = [
   {
     title: "The Awakening",
     author: "Kate Chopin",
+    id: "1aqa3"
   },
   {
     title: "City of Glass",
     author: "Paul Auster",
+    id: "8ythero"
   },
 ];
 
@@ -40,6 +42,7 @@ const typeDefs = gql`
   type Book {
     title: String
     author: String
+    id: ID
   }
 
   # The "Query" type is special: it lists all of the available queries that
@@ -63,17 +66,17 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    // Get the user token from the headers
-    const token = req.headers?.authorization;
+  // context: async ({ req }) => {
+  //   // Get the user token from the headers
+  //   const token = req.headers?.authorization;
 
-    if (token) {
-      // Verify the token and get the user
-      const user = await admin.auth().verifyIdToken(req.headers.authorization);
-      // Add the user to the context
-      return { user };
-    }
-  },
+  //   if (token) {
+  //     // Verify the token and get the user
+  //     const user = await admin.auth().verifyIdToken(req.headers.authorization);
+  //     // Add the user to the context
+  //     return { user };
+  //   }
+  // },
   playground: true,
   introspection: true,
 });
