@@ -5,7 +5,11 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-const { ApolloServer, gql } = require("apollo-server-cloud-functions");
+const {
+  ApolloServer,
+  gql,
+  AuthenticationError,
+} = require("apollo-server-cloud-functions");
 
 const typeDefs = gql`
   type Book {
@@ -16,14 +20,22 @@ const typeDefs = gql`
 
   type Query {
     books: [Book]
+    book(id: ID!): Book
+  }
+
+  type Mutation {
+    newBook(input: BookInput): Book
+  }
+
+  input BookInput {
+    title: String
+    author: String
   }
 `;
 
 const resolvers = {
   Query: {
     books: async (parent, args, context, info) => {
-      console.log(context);
-
       if (!context.user?.uid) return [];
 
       const snapshot = await admin
@@ -32,9 +44,48 @@ const resolvers = {
         .where("uid", "==", context.user.uid)
         .get();
 
-      let walks = [];
-      snapshot.docs.map((doc) => walks.push({ id: doc.id, ...doc.data() }));
-      return walks;
+      let books = [];
+      snapshot.docs.map((doc) => books.push({ id: doc.id, ...doc.data() }));
+      return books;
+    },
+
+    book: async (parent, args, context) => {
+      const doc = await admin
+        .firestore()
+        .collection("books")
+        .doc(args.id)
+        .get();
+
+      if (doc.exists) {
+       
+        return { id: doc.id, ...doc.data() };
+      }
+
+      return; // TODO: error
+    },
+  },
+
+  Mutation: {
+    newBook: async (parent, args, context) => {
+      if (!context.user) {
+        return new AuthenticationError("you must be logged in");
+      }
+
+      const newBook = {
+        ...args.input,
+        uid: context.user.uid,
+      };
+
+      const res = await admin.firestore().collection("books").add(newBook);
+
+      const doc = await admin.firestore().collection("books").doc(res.id).get();
+
+      if (doc.exists) {
+        console.log({ id: doc.id, ...doc.data() })
+        return { id: doc.id, ...doc.data() };
+      }
+
+      return; // TODO: error
     },
   },
 };

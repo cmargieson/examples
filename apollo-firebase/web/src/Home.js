@@ -1,18 +1,10 @@
 import React from "react";
 // Apollo
 import { gql, useQuery } from "@apollo/client";
+// Mutations
+import { BOOKS } from "./mutations";
 
 const HomePage = () => {
-  const BOOKS = gql`
-    query books {
-      books {
-        title
-        author
-        id
-      }
-    }
-  `;
-
   const { loading, error, data } = useQuery(BOOKS);
 
   if (loading) return <p>Loading...</p>;
