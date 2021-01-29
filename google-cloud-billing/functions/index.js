@@ -4,7 +4,7 @@ const { GoogleAuth } = require("google-auth-library");
 
 // https://cloud.google.com/billing/docs/how-to/notify#cap_disable_billing_to_stop_usage
 
-const PROJECT_ID = "city-walks-6f62c";
+const PROJECT_ID = "city-walks-812314rf7d";
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
 const billing = google.cloudbilling("v1").projects;
 
