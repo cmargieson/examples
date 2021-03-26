@@ -1,6 +1,6 @@
 # React + Context Theme
 
-**React Context Theme** is a React app with a customizable theme accessible from the context. You can override the base theme by providing your own theme to the provider. Based on the pattern used by [Rebass](https://github.com/rebassjs/rebass)
+**React Context Theme** is a React app with a customizable theme accessible from the context. You can override the base theme by providing your own theme to the provider. Based on the pattern used by [galio](https://galio.io/).
 
 ### React
 
