@@ -1,1 +1,3 @@
-export * from './components/Button'
+import "./scss/main.scss";
+
+export * from "./components/Button";

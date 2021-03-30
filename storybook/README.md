@@ -3,3 +3,4 @@ cd storybook
 npx sb init
 npm run storybook
 npm install react-bootstrap bootstrap
+npm install sass
