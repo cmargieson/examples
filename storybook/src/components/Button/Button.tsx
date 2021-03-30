@@ -1,4 +1,5 @@
 import React from "react";
+import BootstrapButton from "react-bootstrap/Button";
 import "./button.css";
 
 export interface ButtonProps {
@@ -27,7 +28,12 @@ export interface ButtonProps {
 /**
  * Primary UI component for user interaction
  */
-export const Button: React.FC<ButtonProps> = ({
+
+export const Button = (props: ButtonProps) => {
+  return <BootstrapButton variant="danger">Button</BootstrapButton>;
+};
+
+export const Button_OLD: React.FC<ButtonProps> = ({
   primary = false,
   size = "medium",
   backgroundColor,
