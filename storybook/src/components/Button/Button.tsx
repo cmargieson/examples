@@ -1,28 +1,84 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import BootstrapButton from "react-bootstrap/Button";
-import "./button.css";
+
+type Kind =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "light"
+  | "dark"
+  | "link";
+
+type ButtonType =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "dark"
+  | "light"
+  | "link"
+  | "outline-primary"
+  | "outline-secondary"
+  | "outline-success"
+  | "outline-danger"
+  | "outline-warning"
+  | "outline-info"
+  | "outline-dark"
+  | "outline-light";
 
 export interface ButtonProps {
   /**
-   * Is this the principal call to action on the page?
+   * Button variant.
+   *
+   * @default "primary"
    */
-  primary?: boolean;
+  kind?: Kind;
+
   /**
-   * What background color to use
+   * For a lighter touch, Buttons also come in outline-* variants with no
+   * background color.
+   *
+   * @default false
    */
-  backgroundColor?: string;
+  outlined?: boolean;
+
   /**
-   * How large should the button be?
+   * Spans the full width of the Button parent.
+   *
+   * @default false
    */
-  size?: "small" | "medium" | "large";
+  block?: boolean;
+
   /**
-   * Button contents
+   * Disables the Button, preventing mouse events.
+   *
+   * @default false
    */
-  label: string;
+  disabled?: boolean;
+
   /**
-   * Optional click handler
+   * Specifies a large or small button.
+   *
+   * @default undefined
    */
-  onClick?: () => void;
+  size?: "small" | "large";
+
+  /**
+   * Handles the on click event for a button
+   */
+  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+
+  /**
+   * The children to render
+   *
+   * @default undefined
+   */
+  label?: string;
 }
 
 /**
@@ -30,29 +86,33 @@ export interface ButtonProps {
  */
 
 export const Button = (props: ButtonProps) => {
-  return <BootstrapButton variant="danger">Button</BootstrapButton>;
-};
+  const { kind, outlined, block, disabled, size, label } = props;
 
-export const Button_OLD: React.FC<ButtonProps> = ({
-  primary = false,
-  size = "medium",
-  backgroundColor,
-  label,
-  ...props
-}) => {
-  const mode = primary
-    ? "storybook-button--primary"
-    : "storybook-button--secondary";
+  // Outlined
+  let variant = kind as string;
+  if (outlined) {
+    variant = `outline-${kind}`;
+  }
+
+  // Size
+  function getButtonSize(size: string | undefined): "sm" | "lg" | undefined {
+    if (size === "small") {
+      return "sm";
+    }
+    if (size === "large") {
+      return "lg";
+    }
+    return undefined;
+  }
+
   return (
-    <button
-      type="button"
-      className={["storybook-button", `storybook-button--${size}`, mode].join(
-        " "
-      )}
-      style={{ backgroundColor }}
-      {...props}
+    <BootstrapButton
+      variant={variant as ButtonType}
+      block={block}
+      disabled={disabled}
+      size={getButtonSize(size)}
     >
       {label}
-    </button>
+    </BootstrapButton>
   );
 };
