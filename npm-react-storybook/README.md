@@ -1,6 +1,6 @@
 # Building a Component Library with NPM, React and Storybook
 
-## Build
+## React
 
 Initialize a new node package
 
