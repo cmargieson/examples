@@ -8,5 +8,5 @@ export interface Props {
 export const Button = (props: Props) => {
   const { label } = props;
 
-  return <button>{label}</button>;
+  return <button style={{ backgroundColor: "pink" }}>{label}</button>;
 };
