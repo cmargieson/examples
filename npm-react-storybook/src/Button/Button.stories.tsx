@@ -1,4 +1,4 @@
-import { Button } from "./Button";
+import { Button } from "../";
 
 export default {
   title: "Button",
@@ -7,7 +7,7 @@ export default {
 
 const Template = (args) => <Button {...args} />;
 
-export const Basic = Template.bind({});
-Basic.args = {
+export const Default = Template.bind({});
+Default.args = {
   label: "Button",
 };
