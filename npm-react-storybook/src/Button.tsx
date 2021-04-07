@@ -1,12 +1,17 @@
 export interface Props {
+ /**
+   * The background color
+   */
+  color?: string;
+
   /**
-   * The label to render
+   * The label
    */
   label?: string;
 }
 
 export const Button = (props: Props) => {
-  const { label } = props;
+  const { color, label } = props;
 
-  return <button style={{ backgroundColor: "pink" }}>{label}</button>;
+  return <button style={{ backgroundColor: color }}>{label}</button>;
 };

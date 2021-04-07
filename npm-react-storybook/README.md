@@ -1,17 +1,25 @@
 # Building a Component Library with NPM, React and Storybook
 
+1. React
+
 ## React
 
-Initialize a new node package
+Initialize a new node package an dinstall React and Typescript dependencies.
 
 ```console
 npm init --scope=@cmargieson
 ```
 
-Install React
+Install React and Typescript types
 
-```console
-npm install --save-dev react @types/react
+```json
+{
+  "peerDependencies": {
+    "@types/react": "^17.0.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
 ```
 
 Add tsconfig.json
@@ -39,10 +47,17 @@ Add tsconfig.json
 }
 ```
 
-Add component in src/index.tsx
+Add component/s in src/***.tsx
 
-```jsx
+```tsx
+// src/Button.tsx
+
 export interface Props {
+ /**
+   * The background color to render
+   */
+  color?: string;
+
   /**
    * The label to render
    */
@@ -50,10 +65,32 @@ export interface Props {
 }
 
 export const Button = (props: Props) => {
-  const { label } = props;
+  const { color, label } = props;
 
-  return <button>{label}</button>;
+  return <button style={{ backgroundColor: color }}>{label}</button>;
 };
+```
+
+```tsx
+// src/Button.stories.tsx
+
+import { Button } from "./Button";
+
+export default {
+  title: "Button",
+  component: Button,
+  argTypes: {
+    color: { control: "color" },
+  },
+};
+
+const Template = (args) => <Button {...args} />;
+
+export const Basic = Template.bind({});
+Basic.args = {
+  label: "Button",
+};
+
 ```
 
 ## Rollup
