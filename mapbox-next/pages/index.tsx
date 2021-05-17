@@ -54,6 +54,8 @@ const Component = () => {
           mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         >
           <Source type="geojson" data={data}>
+            {/*
+              // @ts-ignore */}
             <Layer {...dataLayer} />
           </Source>
 
