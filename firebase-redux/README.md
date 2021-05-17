@@ -8,7 +8,6 @@
 
 ### Redux
 
-- Reduc as Higher Order Component connect pattern
 - Thunk middleware for Firebase async Auth
 - Testing with mock redux store
 

@@ -4,7 +4,3 @@
 
 Setup in Google Cloud Platform UI following [this guide](https://cloud.google.com/billing/docs/how-to/notify#cap_disable_billing_to_stop_usage
 ).
-
-### PubSub
-
-- Messaging from GCP to client Cloud Function.
